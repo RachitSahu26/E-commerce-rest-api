@@ -5,8 +5,7 @@ import router from './routes/authRoute.js';
 import dotenv from "dotenv";
 import cors from 'cors';
 import categoryRoute from './routes/categoryRoute.js';
-import path from 'path';
-import productRoute from './routes/productRoute.js'
+import productRoute from './routes/productRoute.js';
 import { connectToMongo } from './dataBase/db.js';
 
 // Configure env
@@ -21,18 +20,14 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
 
-// Serve static files from the client build directory
-const __dirname = path.dirname(new URL(import.meta.url).pathname);
-app.use(express.static(path.join(__dirname, 'client', 'build')));
-
 // Define API routes
 app.use("/api/auth", router);
 app.use("/api/category", categoryRoute);
 app.use("/api/product", productRoute);
 
-// Handle client-side routing
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'));
+// Handle invalid routes
+app.use((req, res) => {
+  res.status(404).json({ message: "Route not found" });
 });
 
 // Database connection
